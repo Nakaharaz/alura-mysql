@@ -5,7 +5,7 @@ class PessoaController {
     static async pegaTodasPessoas(req, res) {
 
         try {
-            const todasAsPessoas = await database.pessoas.findAll();
+            const todasAsPessoas = await database.Pessoas.findAll();
             return res.status(200).json(todasAsPessoas);
 
         } catch (error) {
@@ -17,7 +17,7 @@ class PessoaController {
         const { id } = req.params
 
         try {
-            const umaPessoa = await database.pessoas.findOne({
+            const umaPessoa = await database.Pessoas.findOne({
                 where: {
                     id: Number(id)
                 }
@@ -33,18 +33,19 @@ class PessoaController {
         const novaPessoa = req.body;
 
         try {
-            const novaPessoaCriada = await database.pessoas.create(novaPessoa)
+            const novaPessoaCriada = await database.Pessoas.create(novaPessoa)
             return res.status(200).json(novaPessoaCriada);
 
         } catch (error) {
             return res.status(500).json(error.message);
         }
     }
+
     static async excluiPessoa(req, res) {
         const { id } = req.params;
 
         try {
-            await database.pessoas.destroy({ where: { id: Number(id) } });
+            await database.Pessoas.destroy({ where: { id: Number(id) } });
             return res.status(200).send(`A pessoa de ID:${id} foi de base :(`);
         } catch (error) {
             return res.status(500).json(error.message);
@@ -56,13 +57,68 @@ class PessoaController {
         const { id } = req.params;
 
         try {
-            await database.pessoas.update(novasInfos, { where: { id: Number(id) } })
-            const pessoaAtualizada = await database.pessoas.findOne({ where: { id: Number(id) } })
+            await database.Pessoas.update(novasInfos, { where: { id: Number(id) } })
+            const pessoaAtualizada = await database.Pessoas.findOne({ where: { id: Number(id) } })
             return res.status(200).json(pessoaAtualizada);
         } catch (error) {
             return res.status(500).json(error.message);
         }
     }
+
+    static async pegaUmaMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params
+
+        try {
+            const umaMatricula = await database.Matriculas.findOne({
+                where: {
+                    id: Number(matriculaId),
+                    estudante_id: Number(estudanteId)
+                }
+            }
+            );
+            return res.status(200).json(umaMatricula);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async criaMatricula(req, res) {
+        const { estudanteId } = req.params;
+        const novaMatricula = { ...req.body, estudante_id: Number(estudanteId)}
+    
+        try {
+            const novaMatriculaCriada = await database.Matriculas.create(novaMatricula)
+            return res.status(200).json(novaMatriculaCriada);
+    
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async atualizaMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params
+        const novasInfos = req.body;
+
+        try {
+            await database.Matriculas.update(novasInfos, { where: { id: Number(matriculaId), estudante_id: Number(estudanteId) } })
+            const matriculaAtualizada = await database.Matriculas.findOne({ where: { id: Number(m) } })
+            return res.status(200).json(matriculaAtualizada);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async excluiMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params;
+
+        try {
+            await database.Matriculas.destroy({ where: { id: Number(matriculaId), estudante_id: Number(estudanteId) } });
+            return res.status(200).send(`A matricula de ID: ${matriculaId} da pessoa com o ID: ${estudanteId} foi de base :(`);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
 }
+
 
 module.exports = PessoaController;
