@@ -4,9 +4,11 @@ const PessoaController = require('../controllers/PessoaController.js');
 const router = Router()
 
 router
-.get('/pessoas', PessoaController.pegaTodasPessoas)
+.get('/pessoas', PessoaController.pegaPessoasAtivas)
+.get('/pessoas/todos', PessoaController.pegaTodasPessoas)
 .get('/pessoas/:estudanteId/matricula/:matriculaId', PessoaController.pegaUmaMatricula)
 .get('/pessoas/:id', PessoaController.pegaUmaPessoa)
+.get('/pessoas/:estudanteId/matricula', PessoaController.pegaMatriculas)
 .post('/pessoas', PessoaController.criaPessoa)
 .post('/pessoas/:estudanteId/matricula', PessoaController.criaMatricula)
 .post('/pessoas/:id/restaura', PessoaController.restauraPessoa)
